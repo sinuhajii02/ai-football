@@ -123,10 +123,17 @@ class Tracker:
     def draw_triangle(self, frame, bbox, color):
         y=int(bbox[1])
         x, y= get_center_box(bbox)
-        triangle_points = np.arry([
+        triangle_points = np.array([
             [x, y],
-            []
+            [x-10, y-20],
+            [x+10, y-20],
         ])
+
+        cv2.drawContours(frame, [triangle_points], 0, color, cv2.FILLED)
+        cv2.drawContours(frame, [triangle_points], 0, (0, 0, 0), 2)
+
+
+        return frame
 
     # Create annotations around object
     def draw_circle_around(self, video_frames, tracks):
@@ -147,8 +154,11 @@ class Tracker:
                 frame = self.draw_circle(frame, player['bbox'], (0, 0, 255), track_id)
 
             for track_id, referee in referee_dict.items():
-                frame = self.draw_circle(frame, referee['bbox'], (0, 255, 255), track_id)
+                frame = self.draw_circle(frame, referee['bbox'], (0, 255, 255))
 
+            #draw ball
+            for track_id, ball in ball_dict.items():
+                frame = self.draw_triangle(frame, ball['bbox'], (0, 255, 0))
             output_video_frames.append(frame)
 
         return output_video_frames
