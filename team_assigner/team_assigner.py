@@ -3,6 +3,7 @@ from sklearn.cluster import KMeans
 class TeamAssigner:
     def __init__(self):
         self.team_colors = {}
+        self.player_team_dict = {} #id: team#
 
     def get_clustering_model(self, image):
         image_2d = image.reshape(-1, 3)
@@ -16,7 +17,7 @@ class TeamAssigner:
     def get_player_color(self, frame, bbox):
         image = frame[int(bbox[1]):int(bbox[3]), int(bbox[0]):int(bbox[2])]
 
-        top_half = image[0:int(image.shape[0])/2]
+        top_half = image[0:int(image.shape[0]/2)]
         kmeans = self.get_clustering_model(top_half)
 
         labels = kmeans.labels_
@@ -39,7 +40,7 @@ class TeamAssigner:
         
         player_colors = []
         for _, player_detection in player_detections.items():
-            bbox = player_detections['bbox']
+            bbox = player_detection['bbox']
             player_color = self.get_player_color(frame, bbox)
             player_colors.append(player_color)
         
@@ -51,6 +52,18 @@ class TeamAssigner:
         self.team_colors[2] = kmeans.cluster_centers_[1]
     
     
-    def assign_player
+    def get_player_team(self, frame, player_bbox, player_id):
+        if player_id in self.player_team_dict:
+            return self.player_team_dict[player_id]
+        
+        player_color = self.get_player_color(frame, player_bbox)
+        team_id = self.kmeans.predict(player_color.reshape(1, -1))[0]
+        team_id += 1
+
+
+        self.player_team_dict[player_id] = team_id
+
+        return team_id
+
 
 
