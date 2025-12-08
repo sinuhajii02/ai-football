@@ -1,5 +1,6 @@
 from utils import read_video, save_video
 from trackers import Tracker
+import cv2
 
 def main():
     # Read video
@@ -12,6 +13,7 @@ def main():
                                        read_from_stub=True,
                                        stub_path='stubs/track_stubs.pkl')
 
+    
     # Draw output video
     ## Draw object tracks
     output_video_frames = tracker.draw_circle_around(video_frames=video_frames, tracks=tracks)

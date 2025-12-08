@@ -82,7 +82,7 @@ class Tracker:
 
         return tracks
 
-    def draw_circle(self, frame, bbox, color, track_id):
+    def draw_circle(self, frame, bbox, color, track_id=None):
         y2 = int(bbox[3])
 
         center = get_center_box(bbox)
