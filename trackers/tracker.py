@@ -5,6 +5,7 @@ import os
 import sys
 import cv2
 import numpy as np
+import pandas as pd
 
 sys.path.append('../')
 from utils import get_center_box, get_width_box
@@ -81,7 +82,20 @@ class Tracker:
                 pickle.dump(tracks, f)
 
         return tracks
+    
+    def interpolate_ball_position(self, ball_positions):
+        ball_position = [x.get(1, {}).get('bbox', []) for x in ball_positions]
+        df_ball = pd.DataFrame(data=ball_position, columns=['x1', 'y1', 'x2', 'y2'])
 
+        df_ball = df_ball.interpolate()
+
+        df_ball = df_ball.bfill()
+
+        ball_positions = [{1: {"bbox": x}} for x in df_ball.to_numpy().tolist()]
+
+        return ball_positions
+    
+    
     def draw_circle(self, frame, bbox, color, track_id=None):
         y2 = int(bbox[3])
 
