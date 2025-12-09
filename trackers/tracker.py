@@ -148,9 +148,32 @@ class Tracker:
 
 
         return frame
+    
+    def draw_team_ball_control(self, frame, frame_num, team_ball_control):
+        # draw semi-transparent rectangle
+        overlay = frame.copy()
+        cv2.rectangle(overlay, (1350, 850), (1900, 970), (255, 255, 255), -1)
+        alpha = 0.4
+        cv2.addWeighted(overlay, alpha, frame, 1-alpha, 0, frame)
 
+
+        team_ball_control_till_frame = team_ball_control[:frame_num+1]
+
+        # get the number of times each time has the ball
+        team_1_num_frames = team_ball_control_till_frame[team_ball_control_till_frame==1].shape[0]
+        team_2_num_frames = team_ball_control_till_frame[team_ball_control_till_frame==2].shape[0]
+
+        team_1_ball_pos = team_1_num_frames/(team_1_num_frames + team_2_num_frames)
+        team_2_ball_pos = team_2_num_frames/(team_1_num_frames + team_2_num_frames)
+
+        cv2.putText(frame, f"Team 1 Ball Possession: {team_1_ball_pos*100:.2f}%", (1370, 900), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 3)
+        cv2.putText(frame, f"Team 2 Ball Possession: {team_2_ball_pos*100:.2f}%", (1370, 950), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 3)
+
+        return frame
+
+        
     # Create annotations around object
-    def draw_circle_around(self, video_frames, tracks):
+    def draw_circle_around(self, video_frames, tracks, team_ball_control):
         output_video_frames = []
 
         for frame_num, frame in enumerate(video_frames):
@@ -173,9 +196,14 @@ class Tracker:
             for track_id, referee in referee_dict.items():
                 frame = self.draw_circle(frame, referee['bbox'], (0, 255, 255))
 
-            #draw ball
+            # draw ball
             for track_id, ball in ball_dict.items():
                 frame = self.draw_triangle(frame, ball['bbox'], (0, 255, 0))
+
+
+
+            # draw team statistics: ball possession
+            frame = self.draw_team_ball_control(frame, frame_num, team_ball_control)
             output_video_frames.append(frame)
 
         return output_video_frames

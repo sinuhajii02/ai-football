@@ -3,6 +3,7 @@ from trackers import Tracker
 import cv2
 from team_assigner import TeamAssigner
 from player_ball_assigner import PlayerBallAssigner
+import numpy as np
 
 def main():
     # Read video
@@ -46,10 +47,12 @@ def main():
             # include the last person that has the ball
             team_ball_control.append(team_ball_control[-1])
 
+    team_ball_control = np.array(team_ball_control)
+
     # Draw output video
     ## Draw object tracks
-    output_video_frames = tracker.draw_circle_around(video_frames=video_frames, tracks=tracks)
-    # Save video
+    output_video_frames = tracker.draw_circle_around(video_frames=video_frames, tracks=tracks, team_ball_control=team_ball_control)
+    # Save video 
     save_video(output_video_frames=output_video_frames, output_video_path='output_videos/output_video.mp4', fps=fps)
 
 if __name__ == '__main__':
