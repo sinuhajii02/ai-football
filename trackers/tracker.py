@@ -95,7 +95,7 @@ class Tracker:
 
         return ball_positions
     
-    
+
     def draw_circle(self, frame, bbox, color, track_id=None):
         y2 = int(bbox[3])
 
@@ -136,7 +136,7 @@ class Tracker:
 
     def draw_triangle(self, frame, bbox, color):
         y=int(bbox[1])
-        x, y= get_center_box(bbox)
+        x, _= get_center_box(bbox)
         triangle_points = np.array([
             [x, y],
             [x-10, y-20],
@@ -163,10 +163,12 @@ class Tracker:
 
 
             # Draw players
-
             for track_id, player in player_dict.items():
                 color = player.get('team_color', (0, 0, 255))
                 frame = self.draw_circle(frame, player['bbox'], color, track_id)
+
+                if player.get('has_ball', False):
+                    frame = self.draw_triangle(frame, player['bbox'], (0, 0, 255))
 
             for track_id, referee in referee_dict.items():
                 frame = self.draw_circle(frame, referee['bbox'], (0, 255, 255))
