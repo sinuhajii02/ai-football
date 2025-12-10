@@ -17,7 +17,7 @@ Assigns consistent IDs to players accross frames
 ### Team Assignment
 Cluster players by shirt color to assign them to teams.
 
-### (❗️CURRENTLY DOING ALMOST DONE) -> Camera Movement Estimation
+### (❗️CURRENTLY DOING THIS and ALMOST DONE) -> Camera Movement Estimation
 Tracks feature points near the edges of the frame to estimate horizontal and vertical camer movement.
 
 ### Basic Match Analysis
